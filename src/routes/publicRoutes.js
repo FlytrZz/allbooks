@@ -11,7 +11,7 @@ server.post('/registrar', async (req, res) => {
 
     if (emailExiste(email)) {
         const status = 401;
-        const message = 'E-mail já foi utilizado!';
+        const message = 'E-mail já existente!';
         return res.status(status).json({ status, message });
 
     }
