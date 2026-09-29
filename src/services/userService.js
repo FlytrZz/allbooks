@@ -1,11 +1,20 @@
 const { userDB } = require('../config/database');
 
-function usuarioExiste(email, senha, database = userDB) {
-    // Retorna false se e-mail ou senha forem undefined, null ou vazios
-    if (!email || senha === undefined || senha === null) return false;
-    if (!database || !Array.isArray(database.usuarios)) return false;
+function getUsuariosArray(database) {
+    if (!database) return [];
+    // Se database já for um array (ex: testeDB), usa-o diretamente.
+    // Se for um objeto com a propriedade .usuarios (ex: userDB), usa essa lista.
+    if (Array.isArray(database)) return database;
+    if (Array.isArray(database.usuarios)) return database.usuarios;
+    return [];
+}
 
-    return database.usuarios.some(user => 
+function usuarioExiste(email, senha, database = userDB) {
+    if (!email || senha === undefined || senha === null) return false;
+
+    const usuarios = getUsuariosArray(database);
+
+    return usuarios.some(user => 
         user.email && 
         user.email.toLowerCase() === email.toLowerCase() && 
         String(user.senha) === String(senha)
@@ -13,11 +22,11 @@ function usuarioExiste(email, senha, database = userDB) {
 }
 
 function emailExiste(email, database = userDB) {
-    // Retorna false se o e-mail for undefined, null ou string vazia
     if (!email) return false;
-    if (!database || !Array.isArray(database.usuarios)) return false;
 
-    return database.usuarios.some(user => 
+    const usuarios = getUsuariosArray(database);
+
+    return usuarios.some(user => 
         user.email && 
         user.email.toLowerCase() === email.toLowerCase()
     );
