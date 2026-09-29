@@ -1,13 +1,20 @@
 const { userDB } = require('../config/database')
 
 function usuarioExiste(email, senha, database = userDB) {
-    return database.usuarios.findIndex(user => user.email === email && Number(user.senha) === Number(senha)) !== -1
+    if (!database || !Array.isArray(database.usuarios)) return false;
+    
+    return database.usuarios.some(user => 
+        user.email.toLowerCase() === email.toLowerCase() && 
+        String(user.senha) === String(senha)
+    )
 }
 
 function emailExiste(email, database = userDB) {
-    return database.usuarios.findIndex(user => user.email === email) !== -1
+    if (!database || !Array.isArray(database.usuarios)) return false;
+    
+    return database.usuarios.some(user => 
+        user.email.toLowerCase() === email.toLowerCase()
+    )
 }
-
-
 
 module.exports = { usuarioExiste, emailExiste }
